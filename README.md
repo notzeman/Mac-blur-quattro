@@ -33,6 +33,7 @@ omarchy theme set Mac-blur-quattro
   and a 3-minute long break every fourth break.
 - Bibata Original Classic pointer at size 18.
 - Night light starts at 5500K.
+- Wolfykq-inspired Hyprlock layout with a 12-hour clock, no seconds, and blurred wallpaper.
 
 The theme uses Omarchy's generated application palettes. Its shell surface
 colors refer to palette roles, so edits to `colors.toml` remain dynamic.
@@ -44,7 +45,9 @@ the latest menu and clipboard blur fixes:
 
 - `ghostty/`: terminal configuration, appearance override, and white trail shader.
 - `hypr/`: personal Hyprland configuration, blur rules, bindings, and autostart.
+- `hypr/hyprlock.conf` and `hypr/hyprlock/`: modular lock layout and theme-aware helper scripts.
 - `omarchy/shell.json`: native-bar layout and plugin settings.
+- `omarchy/plugins/zaman.lock/`: Hyprlock adapter for Omarchy's manual, idle, and suspend lock IPC.
 - `omarchy/themed/shell.toml.tpl`: global shell appearance template.
 - `omarchy/hooks/theme-set.d/99-bibata-pointer.sh`: mouse-pointer preference.
 - `gtk-3.0/` and `gtk-4.0/`: mouse-pointer settings.
@@ -78,14 +81,38 @@ omarchy restart terminal
 omarchy restart shell
 ```
 
-Ghostty, hyprsunset, the Bibata Original Classic cursor theme, and the third-party
+Ghostty, hyprsunset, hyprlock, the Bibata Original Classic cursor theme, and the third-party
 plugins referenced in `shell.json` need to be installed separately. Plugin
-source, packages, clipboard history, and scheduler state are not bundled.
+source other than the included Hyprlock adapter, packages, clipboard history,
+and scheduler state are not bundled.
+
+### Hyprlock
+
+The layout is adapted from
+[wolfykq/dotfiles](https://github.com/wolfykq/dotfiles/tree/main/.config/hypr).
+It retains the centered time, date, and password-field arrangement, with
+installed-font fallbacks and a media label positioned to fit different outputs.
+
+Copy `config-snapshot/hypr/hyprlock.conf` and `config-snapshot/hypr/hyprlock/`
+into `~/.config/hypr/`, and copy the included `zaman.lock` directory into
+`~/.config/omarchy/plugins/`. Then enable its supported built-in lock clone:
+
+```bash
+omarchy plugin enable zaman.lock
+omarchy restart shell
+```
+
+**Super+Ctrl+L**, `omarchy system lock`, the System menu, idle locking, and
+suspend locking use this adapter. The clock displays `03:45 PM`, without
+seconds. Hyprlock applies its own background blur with size 7 and 3 passes;
+it uses the current Omarchy wallpaper and refreshes palette colors before
+every lock. The optional media label uses `playerctl` when available.
 
 ## Wallpapers
 
-Theme wallpapers are in `backgrounds/`. After adding files there, refresh the
-active theme and picker cache:
+Theme wallpapers are in `backgrounds/`, numbered `00.png` through `21.png` in
+alphabetical order of their original filenames. After adding or renaming files
+there, refresh the active theme and picker cache:
 
 ```bash
 omarchy theme refresh

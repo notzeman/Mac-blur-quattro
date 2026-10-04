@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "zaman.lock",
+  "name": "Hyprlock — Mac-blur-quattro",
+  "version": "1.0.0",
+  "author": "notzeman",
+  "description": "Hyprlock launcher with Omarchy manual, idle, and suspend lock integration.",
+  "omarchy": {
+    "capabilities": [
+      "authentication"
+    ],
+    "clonedFrom": "omarchy.lock"
+  },
+  "kinds": [
+    "service"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "service": "ExternalLock.qml"
+  }
+}
