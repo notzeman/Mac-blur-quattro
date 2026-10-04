@@ -2,27 +2,27 @@
 mode = "dark"
 
 [colors]
-# Базовые поверхности (Основа Tokyo Night Storm)
-background = "#1a1b26"          # Основной глубокий фон
-dark_background = "#16161e"     # Тёмный фон для панелей
-darker_background = "#0f0f14"   # Глубокий фон для Hyprlock
-lighter_background = "#24283b"  # Светлый фон для активных элементов
-selection = "#292e42"           # Цвет выделения текста
+# Base surfaces (Tokyo Night Storm base)
+background = "#1a1b26"          # Main deep background
+dark_background = "#16161e"     # Dark background for panels
+darker_background = "#0f0f14"   # Deep background for Hyprlock
+lighter_background = "#24283b"  # Light background for active elements
+selection = "#292e42"           # Text selection color
 
-# Границы окон (Обязательный параметр для Omarchy)
-border = "#24283b"              # Цвет неактивной рамки окон
+# Window borders (Required parameter for Omarchy)
+border = "#24283b"              # Inactive window border color
 
-# Текст и акценты (Замороженный Nord Frost)
-foreground = "#d8dee9"          # Основной текст
-light_foreground = "#e5e9f0"    # Светлый читаемый текст
-bright_foreground = "#eceff4"   # Белоснежный текст
-dark_foreground = "#4c566a"     # Тёмный текст
+# Text and accents (Frozen Nord Frost)
+foreground = "#d8dee9"          # Main text
+light_foreground = "#e5e9f0"    # Light readable text
+bright_foreground = "#eceff4"   # Snow-white text
+dark_foreground = "#4c566a"     # Dark text
 
-accent = "#88c0d0"              # Главный акцент: Арктический голубой
-accent_dim = "#81a1c1"          # Второстепенный акцент
-muted = "#4c566a"               # Приглушенный цвет
+accent = "#88c0d0"              # Main accent: Arctic blue
+accent_dim = "#81a1c1"          # Secondary accent
+muted = "#4c566a"               # Muted color
 
-# Палитра ANSI-цветов для терминалов и приложений
+# ANSI color palette for terminals and applications
 [terminal]
 black = "#1a1b26"
 red = "#bf616a"
