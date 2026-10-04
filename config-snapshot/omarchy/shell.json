@@ -1,0 +1,104 @@
+{
+  "bar": {
+    "centerAnchor": "omarchy.clock",
+    "layout": {
+      "center": [
+        {
+          "id": "io.github.silouanwright.look-elsewhere",
+          "breakSeconds": 20,
+          "breakSubtitle": "Let your eyes settle on something distant. Breathe. The screen will still be here.",
+          "displayMode": "icon-and-time",
+          "enforcement": "balanced",
+          "focusMinutes": 25,
+          "longBreakEvery": 4,
+          "longBreakSeconds": 180,
+          "longBreakTitle": "Look elsewhere",
+          "panelPattern": "off",
+          "reducedMotion": false,
+          "showKeyboardHints": false
+        },
+        {
+          "id": "omarchy.indicators"
+        },
+        {
+          "id": "omarchy.keyboard-layout"
+        },
+        {
+          "id": "omarchy.weather"
+        },
+        {
+          "format": "dddd h:mm AP",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "id": "omarchy.clock",
+          "verticalFormat": "hh\n—\nmm"
+        },
+        {
+          "id": "vm.netspeed"
+        },
+        {
+          "id": "omarchy.system-update"
+        },
+        {
+          "id": "io.github.imargorsi.quran-verse"
+        }
+      ],
+      "left": [
+        {
+          "id": "omarchy.workspaces"
+        }
+      ],
+      "right": [
+        {
+          "hidden": [],
+          "id": "omarchy.tray",
+          "showTrayIcons": true
+        },
+        {
+          "id": "jltrench.textify"
+        },
+        {
+          "id": "banan.bananet"
+        },
+        {
+          "id": "io.github.marioxabel.hyprsunset",
+          "nightTemperature": 5500
+        },
+        {
+          "id": "io.github.saikomantisu.playerwidget"
+        },
+        {
+          "id": "omarchy.tailscale"
+        },
+        {
+          "id": "jankeesvw.notification-center"
+        },
+        {
+          "id": "omarchy.bluetooth"
+        },
+        {
+          "id": "omarchy.network"
+        },
+        {
+          "id": "omarchy.monitor"
+        },
+        {
+          "id": "omarchy.audio"
+        },
+        {
+          "id": "omarchy.battery"
+        },
+        {
+          "id": "io.github.amikeal.battery-plus"
+        }
+      ]
+    },
+    "position": "top",
+    "transparent": false
+  },
+  "idle": {
+    "lock": 300,
+    "screensaver": 150
+  },
+  "plugins": [],
+  "version": 1
+}
