@@ -1,0 +1,3 @@
+/* Mac-blur-quattro: keep normal app content solid; glass only on popup surfaces. */
+@import url("../omarchy/gtk/palette.css");
+@import url("../omarchy/gtk/glass.css");

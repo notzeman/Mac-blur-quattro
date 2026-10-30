@@ -7,7 +7,10 @@ hl.config({
     gaps_in = 7,
     gaps_out = 7,
     border_size = 0,
-
+    -- Keep borderless floating windows resizable from an invisible edge zone.
+    resize_on_border = true,
+    extend_border_grab_area = 12,
+    
 
     -- Change to niri-like side-scrolling layout.
     --  layout = "scrolling",
@@ -36,6 +39,8 @@ hl.config({
 
 -- Keep compositor opacity solid; terminals supply their own background alpha.
 o.window(".*", { opacity = "1 override 1 override 1 override" })
+-- Let native modal dialogs blur their own translucent GTK backgrounds.
+o.window({ modal = true }, { no_blur = false, xray = false })
 o.window("com.mitchellh.ghostty", {
   opacity = "1 override 1 override 1 override",
   no_blur = false,

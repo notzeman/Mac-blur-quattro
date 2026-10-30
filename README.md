@@ -23,17 +23,18 @@ omarchy theme set Mac-blur-quattro
 
 - Theme-relative colors from `colors.toml`, with no fixed terminal tint.
 - Native Omarchy bar at 35% opacity, with the tray on the right.
-- Popup panels and hover tooltips at 55% opacity, with no outer borders.
 - Omarchy root and system menus at 55% opacity, with blurred borderless cards.
 - Clipboard and emoji cards use the same blur, with a clear desktop outside them.
+- Hover tooltips fully clear.
 - Hyprland blur size 7 with 3 passes.
-- Ghostty at font size 10 and 55% background opacity.
+- Ghostty at font size 8 and 30% background opacity with perceptual per-cell fading.
 - White Ghostty cursor and animated white GLSL trail.
 - LookElsewhere in the center: 25-minute focus intervals, 20-second breaks,
   and a 3-minute long break every fourth break.
 - Bibata Original Classic pointer at size 18.
 - Night light starts at 5500K.
 - Wolfykq-inspired Hyprlock layout with a 12-hour clock, no seconds, and blurred wallpaper.
+- Theme-aware GTK3/GTK4 glass dialogs, menus, and popovers with readable controls.
 
 The theme uses Omarchy's generated application palettes. Its shell surface
 colors refer to palette roles, so edits to `colors.toml` remain dynamic.
@@ -50,7 +51,8 @@ the latest menu and clipboard blur fixes:
 - `omarchy/plugins/zaman.lock/`: Hyprlock adapter for Omarchy's manual, idle, and suspend lock IPC.
 - `omarchy/themed/shell.toml.tpl`: global shell appearance template.
 - `omarchy/hooks/theme-set.d/99-bibata-pointer.sh`: mouse-pointer preference.
-- `gtk-3.0/` and `gtk-4.0/`: mouse-pointer settings.
+- `gtk-3.0/` and `gtk-4.0/`: mouse-pointer settings and GTK glass stylesheet imports.
+- `omarchy/gtk/` and `omarchy/hooks/theme-set.d/10-gtk.sh`: glass styles and palette generation.
 - `xdg-terminals.list`: Ghostty as the default terminal.
 
 Selecting the theme applies its palette, wallpapers, and shell appearance.
@@ -107,6 +109,49 @@ suspend locking use this adapter. The clock displays `03:45 PM`, without
 seconds. Hyprlock applies its own background blur with size 7 and 3 passes;
 it uses the current Omarchy wallpaper and refreshes palette colors before
 every lock. The optional media label uses `playerctl` when available.
+
+### GTK dialogs and popups
+
+The GTK setup uses [adw-gtk3](https://github.com/lassekongo83/adw-gtk3) as the
+GTK3 base theme, plus user CSS supported by GTK3 and GTK4. Install the base
+theme with `omarchy pkg add adw-gtk-theme`, or extract its official release
+archive into `~/.local/share/themes/`.
+
+Copy the snapshot's `gtk-3.0/gtk.css`, `gtk-4.0/gtk.css`, and `omarchy/gtk/`
+into the corresponding directories under `~/.config/`. Install the saved
+`10-gtk.sh` theme hook to keep palette colors synchronized:
+
+```bash
+omarchy hook install theme-set ./config-snapshot/omarchy/hooks/theme-set.d/10-gtk.sh
+bash ~/.config/omarchy/hooks/theme-set.d/10-gtk.sh
+```
+
+Native dialog and popup backgrounds use 55% opacity; text, icons, and buttons
+retain their own opacity. GTK4/libadwaita surfaces that are embedded within an
+application instead of separate popup windows follow that application's rendering.
+Restart already-running applications to load the repaired GTK stylesheets.
+
+The saved legacy `omarchy/hooks/theme-set` was also updated to use the current
+state directory and Omarchy's normalized color lookup, avoiding invalid `#;`
+CSS colors with palettes that do not store raw `color0`…`color15` keys.
+
+### Third-party plugin patches
+
+`config-snapshot/patches/` carries local fixes for cloned plugins so they can
+be reapplied after a plugin is reinstalled or updated. Each `*.patch` applies
+with `git apply` inside the plugin directory at the revision named by the
+matching `*-base.txt` file:
+
+```bash
+git -C ~/.config/omarchy/plugins/io.github.amikeal.battery-plus \
+  apply config-snapshot/patches/io.github.amikeal.battery-plus-charging-state.patch
+omarchy restart shell
+```
+
+The battery-plus patch fixes the charging indicator: corrected charging
+glyphs, a plug icon with `PLUGGED IN · NOT CHARGING` for an AC-connected idle
+battery, and accurate tooltip and panel status labels. Apply it from the
+repository root, or from wherever the snapshot was cloned.
 
 ## Wallpapers
 

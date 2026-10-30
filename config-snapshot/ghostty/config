@@ -1,15 +1,16 @@
 # Dynamic theme colors
 config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"
 # Keep personal appearance overrides after the theme include is loaded.
-config-file = "~/.config/ghostty/appearance.conf"
+config-file = /home/zaman/.config/ghostty/appearance.conf
 
 # Font
 font-family = "JetBrainsMono Nerd Font"
 font-style = Regular
-font-size = 10
+font-size = 8
 
 # Window
-background-opacity = 0.55
+# A light dull tint so the surface reads as glass without hiding the blur.
+background-opacity = 0.30
 background-opacity-cells = true
 window-theme = ghostty
 window-padding-x = 14
@@ -48,5 +49,5 @@ mouse-scroll-multiplier = 0.95
 async-backend = epoll
 
 # Animated cursor trail
-custom-shader = "~/.config/ghostty/shaders/lowenhart.glsl"
+custom-shader = /home/zaman/.config/ghostty/shaders/lowenhart.glsl
 custom-shader-animation = always

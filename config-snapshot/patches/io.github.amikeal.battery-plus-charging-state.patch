@@ -1,0 +1,139 @@
+diff --git i/Model.js w/Model.js
+index de7b1b7..0ccabd2 100644
+--- i/Model.js
++++ w/Model.js
+@@ -3,21 +3,43 @@
+ // Nerd Font battery glyphs (Material Design set, matching the built-in power widget).
+ var DISCHARGE = ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾",
+                  "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"];
+-var CHARGE    = ["󰂜", "󰂆", "󰂇", "󰂈", "󰂝",
+-                 "󰂉", "󰂞", "󰂊", "󰂋", "󰂅"];
+-var FULL_ICON = "󰂅";       // 󰂅
+-var ALERT_ICON = "󰂃";      // 󰂃
++var CHARGE    = ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝",
++                 "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"];
++var FULL_ICON = "󰂅";       // battery-charging / full
++var ALERT_ICON = "󰂃";      // battery-alert
++var PLUGGED_ICON = "󰚥";    // power-plug: AC connected, battery not charging
+ 
+ function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+ 
+-function batteryIcon(percent, status) {
+-  var i = clamp(Math.floor((Number(percent) || 0) / 10), 0, 9);
++function isOnAc(acOnline) {
++  return acOnline === true || Number(acOnline) === 1;
++}
++
++function batteryIcon(percent, status, acOnline) {
++  var pct = Number(percent) || 0;
++  var i = clamp(Math.floor(pct / 10), 0, 9);
+   if (status === "Full" || status === "FullyCharged") return FULL_ICON;
++  if (isOnAc(acOnline) && pct >= 99) return FULL_ICON;
+   if (status === "Charging") return CHARGE[i];
+-  if (status === "Discharging" && percent <= 10) return ALERT_ICON;
++  // UPower reports PendingCharge when a charge threshold holds the battery,
++  // and some firmware reports Unknown while still connected. A plugged-in
++  // battery that is not charging must not look like it is on battery power.
++  if (isOnAc(acOnline) && status !== "Discharging") return PLUGGED_ICON;
++  if (status === "Discharging" && pct <= 10) return ALERT_ICON;
+   return DISCHARGE[i];
+ }
+ 
++// Short state label for the bar tooltip and the panel's stats row.
++function statusLabel(b) {
++  if (!b || !b.present) return "No battery";
++  if (b.status === "Full" || b.status === "FullyCharged"
++      || (isOnAc(b.acOnline) && Number(b.percent) >= 99)) return "Fully charged";
++  if (b.status === "Charging") return "Charging";
++  if (isOnAc(b.acOnline)) return "Plugged in · not charging";
++  if (b.status === "Discharging") return "On battery";
++  return "Battery " + (Number(b.percent) || 0) + "%";
++}
++
+ function fmtWatts(w) {
+   var n = Number(w) || 0;
+   return (n >= 10 ? n.toFixed(1) : n.toFixed(2)) + " W";
+@@ -34,9 +56,10 @@ function fmtDuration(mins) {
+ // Hero meta line, e.g. "ON BATTERY · 10.2 W" / "CHARGING · 22 W" / "FULLY CHARGED".
+ function modeLabel(b) {
+   if (!b || !b.present) return "NO BATTERY";
+-  if (b.status === "Full" || (b.acOnline && b.percent >= 99)) return "FULLY CHARGED";
++  if (b.status === "Full" || b.status === "FullyCharged"
++      || (isOnAc(b.acOnline) && Number(b.percent) >= 99)) return "FULLY CHARGED";
+   if (b.status === "Charging") return "CHARGING · " + fmtWatts(b.watts);
+-  if (b.acOnline) return "ON AC";
++  if (isOnAc(b.acOnline)) return "PLUGGED IN · NOT CHARGING";
+   return "ON BATTERY · " + fmtWatts(b.watts);
+ }
+ 
+diff --git i/Panel.qml w/Panel.qml
+index 8595a3c..70173f8 100644
+--- i/Panel.qml
++++ w/Panel.qml
+@@ -30,10 +30,13 @@ Panel {
+   readonly property string batStatus: !batPresent ? "Unknown"
+     : dev.state === UPowerDeviceState.Charging ? "Charging"
+     : dev.state === UPowerDeviceState.Discharging ? "Discharging"
++    : dev.state === UPowerDeviceState.PendingDischarge ? "Discharging"
+     : dev.state === UPowerDeviceState.FullyCharged ? "Full"
+     : dev.state === UPowerDeviceState.PendingCharge ? "Not charging"
+     : "Unknown"
+   readonly property bool charging: batStatus === "Charging"
++  readonly property bool pluggedIn: batPresent && !UPower.onBattery
++  readonly property bool discharging: batStatus === "Discharging"
+ 
+   // Merge live UPower values with the polled extras (cycles, temp, health).
+   readonly property var b: ({
+@@ -96,12 +99,13 @@ Panel {
+     anchors.fill: parent
+     bar: root.bar
+     text: root.showPercentage && !vertical
+-      ? (Model.batteryIcon(root.b.percent, root.b.status) + "  " + root.b.percent + "%")
+-      : Model.batteryIcon(root.b.percent, root.b.status)
++      ? (Model.batteryIcon(root.b.percent, root.b.status, root.b.acOnline) + "  " + root.b.percent + "%")
++      : Model.batteryIcon(root.b.percent, root.b.status, root.b.acOnline)
+     slotSize: Style.bar.iconSlot * (root.showPercentage && !vertical ? 2.3 : 1)
+     tooltipText: root.b.present
+-      ? ("Battery " + root.b.percent + "%  ·  " + Model.fmtWatts(root.b.watts)
+-         + (root.b.status === "Discharging" ? "  ·  " + Model.fmtDuration(root.b.minutes) + " left" : ""))
++      ? ("Battery " + root.b.percent + "%  ·  " + Model.statusLabel(root.b)
++         + (Number(root.b.watts) > 0.05 ? "  ·  " + Model.fmtWatts(root.b.watts) : "")
++         + (root.discharging && root.b.minutes > 0 ? "  ·  " + Model.fmtDuration(root.b.minutes) + " left" : ""))
+       : "Running on AC"
+     onPressed: function(btn) {
+       if (btn === Qt.RightButton) root.togglePercentage()
+@@ -159,8 +163,8 @@ Panel {
+             fontFamily: root.fontFamily
+             iconComponent: Component {
+               Text {
+-                text: Model.batteryIcon(root.b.percent, root.b.status)
+-                color: root.charging ? root.fg : (root.b.percent <= 10 ? root.urgent : root.fg)
++                text: Model.batteryIcon(root.b.percent, root.b.status, root.b.acOnline)
++                color: root.discharging && root.b.percent <= 10 ? root.urgent : root.fg
+                 font.family: root.fontFamily
+                 font.pixelSize: Style.font.display
+                 Behavior on color { ColorAnimation { duration: 200 } }
+@@ -193,7 +197,7 @@ Panel {
+               anchors.verticalCenter: parent.verticalCenter
+               height: parent.height
+               radius: height / 2
+-              color: root.b.percent <= 10 && !root.charging ? root.urgent : root.fg
++              color: root.discharging && root.b.percent <= 10 ? root.urgent : root.fg
+               width: Math.max(height, parent.width * Math.max(0, Math.min(1, root.b.fraction)))
+ 
+               Behavior on width { NumberAnimation { duration: 320; easing.type: Easing.OutCubic } }
+@@ -262,9 +266,11 @@ Panel {
+             rowSpacing: Style.spacing.sm
+ 
+             StatPair {
+-              label: root.b.status === "Charging" ? "To full" : "Time left"
+-              value: root.b.status === "Discharging" || root.b.status === "Charging"
+-                ? Model.fmtDuration(root.b.minutes) : "—"
++              label: root.charging ? "To full" : root.discharging ? "Time left" : "Status"
++              value: root.charging || root.discharging
++                ? Model.fmtDuration(root.b.minutes)
++                : root.b.status === "Full" || root.b.percent >= 99 ? "Full"
++                : root.pluggedIn ? "Plugged in" : "—"
+             }
+             StatPair { label: "Draw"; value: Model.fmtWatts(root.b.watts) }
+             StatPair { label: "Health"; value: (root.b.health || 0) + "%" }

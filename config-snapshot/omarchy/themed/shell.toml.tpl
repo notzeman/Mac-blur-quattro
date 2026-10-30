@@ -134,7 +134,7 @@ border-width     = 0
 [tooltip]
 # Translucent hover tooltips; Hyprland blurs their popup backgrounds.
 background       = "{{ background }}"
-background-alpha = 0.55
+background-alpha = 0.0
 text             = "{{ foreground }}"
 border           = "hyprland.active-border-foreground"
 border-alpha     = 0.0

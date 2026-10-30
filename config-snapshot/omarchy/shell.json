@@ -4,12 +4,12 @@
     "layout": {
       "center": [
         {
-          "id": "io.github.silouanwright.look-elsewhere",
           "breakSeconds": 20,
           "breakSubtitle": "Let your eyes settle on something distant. Breathe. The screen will still be here.",
           "displayMode": "icon-and-time",
           "enforcement": "balanced",
           "focusMinutes": 25,
+          "id": "io.github.silouanwright.look-elsewhere",
           "longBreakEvery": 4,
           "longBreakSeconds": 180,
           "longBreakTitle": "Look elsewhere",
@@ -45,6 +45,9 @@
       "left": [
         {
           "id": "omarchy.workspaces"
+        },
+        {
+          "id": "pietrovos.subspace"
         }
       ],
       "right": [
@@ -95,6 +98,12 @@
     "position": "top",
     "transparent": false
   },
+  "cloneSourceRestores": [
+    "zaman.lock"
+  ],
+  "disabledPlugins": [
+    "omarchy.lock"
+  ],
   "idle": {
     "lock": 300,
     "screensaver": 150
@@ -104,11 +113,5 @@
       "id": "zaman.lock"
     }
   ],
-  "version": 1,
-  "disabledPlugins": [
-    "omarchy.lock"
-  ],
-  "cloneSourceRestores": [
-    "zaman.lock"
-  ]
+  "version": 1
 }
