@@ -88,6 +88,20 @@ plugins referenced in `shell.json` need to be installed separately. Plugin
 source other than the included Hyprlock adapter, packages, clipboard history,
 and scheduler state are not bundled.
 
+The hotspot widget in the saved bar is
+[omarchy-hotspot](https://github.com/chillboy0101/omarchy-hotspot). Install it,
+then run its one-time system setup (one administrator authentication) from a
+terminal or the panel's **Set up hotspot** action:
+
+```bash
+omarchy plugin add https://github.com/chillboy0101/omarchy-hotspot.git --enable
+~/.config/omarchy/plugins/io.github.chillboy0101.omarchy-hotspot/install.sh
+```
+
+Setup adds `hostapd`, `dnsmasq`, a root-owned helper, and a polkit rule. It
+requires a Wi-Fi driver that can run station and AP interfaces concurrently;
+the helper's `status` command confirms the connection without a password.
+
 ### Hyprlock
 
 The layout is adapted from
