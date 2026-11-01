@@ -36,3 +36,8 @@ end
 
 -- LookElsewhere eye-break timer and settings panel.
 o.bind("SUPER + ALT + L", "LookElsewhere", "omarchy-shell look-elsewhere-panel toggle")
+
+-- The display panel is a local clone, so keep the hotkey on the clone:
+-- it carries the 0% = display off behaviour.
+hl.unbind("SUPER + CTRL + D")
+o.bind("SUPER + CTRL + D", "Display", "omarchy-shell zaman.monitor toggle")

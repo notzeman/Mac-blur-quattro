@@ -53,8 +53,7 @@ the latest menu and clipboard blur fixes:
 - `omarchy/hooks/theme-set.d/99-bibata-pointer.sh`: mouse-pointer preference.
 - `gtk-3.0/` and `gtk-4.0/`: mouse-pointer settings and GTK glass stylesheet imports.
 - `omarchy/gtk/` and `omarchy/hooks/theme-set.d/10-gtk.sh`: glass styles and palette generation.
-- `omarchy/scripts/brightness-zero-dpms`: turns the display off at 0% backlight.
-- `systemd/user/omarchy-brightness-zero-dpms.service`: runs the brightness watcher.
+- `omarchy/plugins/zaman.monitor/`: local Display-panel clone; 0% brightness blanks the screen.
 - `xdg-terminals.list`: Ghostty as the default terminal.
 
 Selecting the theme applies its palette, wallpapers, and shell appearance.
@@ -106,25 +105,30 @@ the helper's `status` command confirms the connection without a password.
 
 ### Display off at 0% brightness
 
-Some panels still emit light at a backlight value of 0%, so 0% alone does not
-blank the screen. The included watcher turns the display off with DPMS at 0%
-and turns it back on when brightness rises above 0%. It also re-asserts off
-when idle or lock wake relights a 0% panel.
+Some panels still emit light at a backlight value of 0%. The saved Display
+panel is a local clone of `omarchy.monitor` whose brightness slider goes to 0%
+and, at that value, writes 0% and disables the display with DPMS. Raising the
+slider above 0% enables it again. Keyboard or pointer input also wakes the
+display, at the current 0% brightness.
 
-Copy `config-snapshot/omarchy/scripts/brightness-zero-dpms` to
-`~/.config/omarchy/scripts/` and
-`config-snapshot/systemd/user/omarchy-brightness-zero-dpms.service` to
-`~/.config/systemd/user/`, then enable it:
+The saved bar layout and the `SUPER + CTRL + D` hotkey both use the clone
+(`zaman.monitor`). Recreate it on a fresh install, then copy the saved panel
+over it:
 
 ```bash
-chmod +x ~/.config/omarchy/scripts/brightness-zero-dpms
-systemctl --user daemon-reload
-systemctl --user enable --now omarchy-brightness-zero-dpms.service
+omarchy plugin clone omarchy.monitor
+cp -a config-snapshot/omarchy/plugins/zaman.monitor/. \
+  ~/.config/omarchy/plugins/zaman.monitor/
+omarchy restart shell
+hyprctl reload
 ```
 
-`omarchy brightness display off` and `on` still work manually. Hyprland's Lua
-DPMS dispatcher has no per-monitor target, so the 0% rule affects every
-connected display.
+`config-snapshot/hypr/bindings.lua` includes the matching `hl.unbind` and
+`o.bind` pair that points the Display hotkey at `zaman.monitor`. Hyprland's Lua
+DPMS dispatcher has no per-monitor target, so 0% affects every connected
+display. The clone keeps its own IPC target, so
+`omarchy-shell zaman.monitor toggle` works; the built-in `omarchy.monitor`
+panel remains disabled and does not have this behaviour.
 
 ### Hyprlock
 
