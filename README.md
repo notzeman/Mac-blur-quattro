@@ -53,6 +53,8 @@ the latest menu and clipboard blur fixes:
 - `omarchy/hooks/theme-set.d/99-bibata-pointer.sh`: mouse-pointer preference.
 - `gtk-3.0/` and `gtk-4.0/`: mouse-pointer settings and GTK glass stylesheet imports.
 - `omarchy/gtk/` and `omarchy/hooks/theme-set.d/10-gtk.sh`: glass styles and palette generation.
+- `omarchy/scripts/brightness-zero-dpms`: turns the display off at 0% backlight.
+- `systemd/user/omarchy-brightness-zero-dpms.service`: runs the brightness watcher.
 - `xdg-terminals.list`: Ghostty as the default terminal.
 
 Selecting the theme applies its palette, wallpapers, and shell appearance.
@@ -101,6 +103,28 @@ omarchy plugin add https://github.com/chillboy0101/omarchy-hotspot.git --enable
 Setup adds `hostapd`, `dnsmasq`, a root-owned helper, and a polkit rule. It
 requires a Wi-Fi driver that can run station and AP interfaces concurrently;
 the helper's `status` command confirms the connection without a password.
+
+### Display off at 0% brightness
+
+Some panels still emit light at a backlight value of 0%, so 0% alone does not
+blank the screen. The included watcher turns the display off with DPMS at 0%
+and turns it back on when brightness rises above 0%. It also re-asserts off
+when idle or lock wake relights a 0% panel.
+
+Copy `config-snapshot/omarchy/scripts/brightness-zero-dpms` to
+`~/.config/omarchy/scripts/` and
+`config-snapshot/systemd/user/omarchy-brightness-zero-dpms.service` to
+`~/.config/systemd/user/`, then enable it:
+
+```bash
+chmod +x ~/.config/omarchy/scripts/brightness-zero-dpms
+systemctl --user daemon-reload
+systemctl --user enable --now omarchy-brightness-zero-dpms.service
+```
+
+`omarchy brightness display off` and `on` still work manually. Hyprland's Lua
+DPMS dispatcher has no per-monitor target, so the 0% rule affects every
+connected display.
 
 ### Hyprlock
 
