@@ -44,21 +44,21 @@ o.window({ modal = true }, { no_blur = false, xray = false })
 o.window("com.mitchellh.ghostty", {
   opacity = "1 override 1 override 1 override",
   no_blur = false,
-  xray = true,
+  xray = false,
 })
 -- Also cover applications that paint explicit opaque terminal-cell backgrounds.
 o.window("^(foot|footclient)$", {
   opacity = "0.80 override 0.80 override 0.80 override",
   no_blur = false,
-  xray = true,
+  xray = false,
 })
 o.window({ class = "^org.omarchy.agent$", initial_title = "^foot$" }, {
   opacity = "0.80 override 0.80 override 0.80 override",
   no_blur = false,
-  xray = true,
+  xray = false,
 })
 -- Omarchy launches Ghostty TUIs with their own app IDs.
-o.window({ tag = "terminal" }, { no_blur = false, xray = true, border_size = 0 })
+o.window({ tag = "terminal" }, { no_blur = false, xray = false, border_size = 0 })
 
 -- Blur the Quickshell bar and its separate widget-tooltip popup surfaces.
 hl.layer_rule({
